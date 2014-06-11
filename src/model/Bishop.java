@@ -51,7 +51,7 @@ class Bishop extends Piece {
             }
         }
         //all possible moves in the up positive diagonal
-        for (int j = column - 1, i = row + 1; j > -0 && i < Board.SIZE; j--, i++) {
+        for (int j = column - 1, i = row + 1; j > -1 && i < Board.SIZE; j--, i++) {
             Square square = super.getSquare().getBoardSquare(i, j);
             if (square.getPiece() == null) {
                 possibleMoves.add(square);
@@ -63,7 +63,7 @@ class Bishop extends Piece {
             }
         }
         //all possible moves in the up negative diagonal
-        for (int j = column - 1, i = row - 1; j >= 0 && i > -0; j--, i--) {
+        for (int j = column - 1, i = row - 1; j > -1 && i > -1; j--, i--) {
             Square square = super.getSquare().getBoardSquare(i, j);
             if (square.getPiece() == null) {
                 possibleMoves.add(square);
@@ -75,7 +75,7 @@ class Bishop extends Piece {
             }
         }
         //all possible moves in the down negative diagonal
-        for (int j = column + 1, i = row - 1; j < Board.SIZE && i > -0; j++, i--) {
+        for (int j = column + 1, i = row - 1; j < Board.SIZE && i > -1; j++, i--) {
             Square square = super.getSquare().getBoardSquare(i, j);
             if (square.getPiece() == null) {
                 possibleMoves.add(square);
