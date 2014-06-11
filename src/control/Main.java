@@ -17,6 +17,7 @@
  */
 package control;
 
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,17 +40,6 @@ public class Main {
         frame.setResizable(false);
         frame.pack();
         frame.setLocationByPlatform(true);
-        JFrame frame2 = new JFrame("My chessboard util window");
-        frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JButton newGame = new JButton("New Game");
-        newGame.addActionListener((ActionEvent e) -> {
-            board.create();
-        });
-        frame2.getContentPane().add(newGame);
-        frame2.setVisible(true);
         frame.setVisible(true);
-        frame2.setResizable(false);
-        frame2.pack();
-        frame2.setLocation(frame.getX() + 20 + frame.getWidth(), frame.getY());
     }
 }
