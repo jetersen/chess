@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -54,23 +55,23 @@ public class Square extends JButton {
     private void select() {
         if (piece != null) {
             if ((board.getTurn() && !piece.isWhite()) || (!board.getTurn() && piece.isWhite()) && !selected) {
-//               if (piece.getTypeNumber() == 5 || !board.kingInCheck()) {
-                if (board.getSelected() != null && !board.getSelected().isEmpty()) {
-                    board.getSelected().getPiece().getPossibleMoves().stream().forEach((_item) -> {
-                        _item.deselect();
-                    });
+                if (piece.getTypeNumber() == 5 || !board.kingInCheck()) {
+                    if (board.getSelected() != null && !board.getSelected().isEmpty()) {
+                        board.getSelected().getPiece().getPossibleMoves().stream().forEach((_item) -> {
+                            _item.deselect();
+                        });
+                    }
+                    board.deselect();
+                    board.setSelected(this);
+                    selected = true;
+                    setBackground(Color.YELLOW);
+                    piece.printPossibleMoves();
+                } else {
+                    if (board.getReminder() > 1) {
+                        JOptionPane.showMessageDialog(this, "King in check");
+                        board.resetReminder();
+                    }
                 }
-                board.deselect();
-                board.setSelected(this);
-                selected = true;
-                setBackground(Color.YELLOW);
-                piece.printPossibleMoves();
-//                } else {
-//                    if (board.getReminder() > 1) {
-//                        JOptionPane.showMessageDialog(this, "King in check");
-//                        board.resetReminder();
-//                    }
-//                }
             } else if ((board.getTurn() && piece.isWhite()) || (!board.getTurn() && !piece.isWhite())) {
                 if (board.getSelected() != null && !board.getSelected().isEmpty()) {
                     if (board.getSelected().getPiece().getPossibleMoves().contains(this)) {

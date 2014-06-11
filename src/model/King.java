@@ -28,10 +28,12 @@ import java.util.List;
 class King extends Piece {
 
     Collection<Square> possibleMoves;
+    boolean inCheck;
 
     public King(PieceColor color, PieceType type) {
         super(color, type);
         possibleMoves = new ArrayList<>();
+        inCheck = false;
     }
 
     @Override
@@ -56,6 +58,7 @@ class King extends Piece {
         }
         possibleMoves.addAll(moves);
         if (getSquare().isSelected()) {
+            inCheck = false;
             Piece[] pieces = {
                 PieceType.PAWN.create(getPieceColor()),
                 PieceType.ROOK.create(getPieceColor()),
@@ -70,12 +73,15 @@ class King extends Piece {
                     for (Piece piece : pieces) {
                         piece.putPieceOnSquareFirstTime(kingMove);
                         piece.generatePossibleMoves();
-                        piece.getPossibleMoves().stream().filter((enemy) ->
-                                (possibleMoves.contains(kingMove) && !enemy.isEmpty() 
-                                        && enemy.getPiece().isOpponent(piece) 
-                                        && enemy.getPiece().getTypeNumber() == piece.getTypeNumber())).forEach((_item) -> {
-                            possibleMoves.remove(kingMove);
-                        });
+                        piece.getPossibleMoves().stream().filter((enemy)
+                                -> (possibleMoves.contains(kingMove) && !enemy.isEmpty()
+                                && enemy.getPiece().isOpponent(piece)
+                                && enemy.getPiece().getTypeNumber() == piece.getTypeNumber())).forEach((_item) -> {
+                                    possibleMoves.remove(kingMove);
+                                    if (!inCheck) {
+                                        inCheck = _item.getPiece().generatePossibleMoves().contains(getSquare());
+                                    }
+                                });
                     }
                     kingMove.removePiece();
                 } else if (isOpponent(kingMove.getPiece())) {
@@ -84,12 +90,15 @@ class King extends Piece {
                         kingMove.removePiece();
                         piece.putPieceOnSquareFirstTime(kingMove);
                         piece.generatePossibleMoves();
-                        piece.getPossibleMoves().stream().filter((enemy) ->
-                                (possibleMoves.contains(kingMove) && !enemy.isEmpty() 
-                                        && enemy.getPiece().isOpponent(piece) 
-                                        && enemy.getPiece().getTypeNumber() == piece.getTypeNumber())).forEach((_item) -> {
-                            possibleMoves.remove(kingMove);
-                        });
+                        piece.getPossibleMoves().stream().filter((enemy)
+                                -> (possibleMoves.contains(kingMove) && !enemy.isEmpty()
+                                && enemy.getPiece().isOpponent(piece)
+                                && enemy.getPiece().getTypeNumber() == piece.getTypeNumber())).forEach((_item) -> {
+                                    possibleMoves.remove(kingMove);
+                                    if (!inCheck) {
+                                        inCheck = _item.getPiece().generatePossibleMoves().contains(getSquare());
+                                    }
+                                });
                     }
                     kingMove.removePiece();
                     oldPiece.putPieceOnSquareFirstTime(kingMove);

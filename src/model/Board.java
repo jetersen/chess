@@ -21,7 +21,9 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -43,42 +45,11 @@ public final class Board extends JPanel {
     private int reminder;
     public static final int SIZE = 8;
     private static final int GAP = 5;
-    private Piece whiteKingPiece;
-    private Piece blackKingPiece;
+    private King whiteKingPiece;
+    private King blackKingPiece;
 
     public Board() {
         create();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(0, 2 * GAP, 0, 2 * GAP);
-        add(createRankPanel(), gbc);
-
-        gbc.gridx = 2;
-        gbc.anchor = GridBagConstraints.EAST;
-        add(createRankPanel(), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.SOUTH;
-        gbc.insets = new Insets(GAP, 0, GAP, 0);
-        add(createFilePanel(), gbc);
-
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.NORTH;
-        add(createFilePanel(), gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        add(boardPanel, gbc);
     }
 
     private JPanel createFilePanel() {
@@ -124,7 +95,49 @@ public final class Board extends JPanel {
                 boardPanel.add(board[row][column]);
             }
         }
-        add(boardPanel);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(0, 2 * GAP, 0, 2 * GAP);
+        add(createRankPanel(), gbc);
+
+        gbc.gridx = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        add(createRankPanel(), gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.SOUTH;
+        gbc.insets = new Insets(GAP, 0, GAP, 0);
+        add(createFilePanel(), gbc);
+
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.NORTH;
+        add(createFilePanel(), gbc);
+
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.insets = new Insets(GAP, 0, GAP, GAP);
+        JButton newGame = new JButton("New Game");
+        newGame.addActionListener((ActionEvent e) -> {
+            create();
+        });
+
+        add(newGame, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        add(boardPanel, gbc);
+        add(boardPanel,gbc);
         createStandardPieceSet();
     }
 
@@ -155,7 +168,7 @@ public final class Board extends JPanel {
                 pieces.add(piece);
                 whitePieces.add(piece);
                 if (piece.isKing()) {
-                    whiteKingPiece = piece;
+                    whiteKingPiece = (King) piece;
                 }
                 count++;
             }
@@ -190,7 +203,7 @@ public final class Board extends JPanel {
                 pieces.add(piece);
                 blackPieces.add(piece);
                 if (piece.isKing()) {
-                    blackKingPiece = piece;
+                    blackKingPiece = (King) piece;
                 }
                 count++;
             }
@@ -205,11 +218,11 @@ public final class Board extends JPanel {
             }
         }
     }
-    
+
     public void resetReminder() {
         reminder = 0;
     }
-    
+
     public int getReminder() {
         return reminder++;
     }
@@ -237,25 +250,11 @@ public final class Board extends JPanel {
     }
 
     public boolean kingInCheck() {
-        whiteKingPiece.generatePossibleMoves();
-        blackKingPiece.generatePossibleMoves();
-        boolean bool = false;
         if (turn) {
-            for (Piece piece : whitePieces) {
-                bool = piece.getPossibleMoves().contains(blackKingPiece.getSquare());
-                if (bool) {
-                    break;
-                }
-            }
+            return blackKingPiece.inCheck;
         } else {
-            for (Piece piece : blackPieces) {
-                bool = piece.getPossibleMoves().contains(whiteKingPiece.getSquare());
-                if (bool) {
-                    break;
-                }
-            }
+            return whiteKingPiece.inCheck;
         }
-        return bool;
     }
 
     public Square getSelected() {
