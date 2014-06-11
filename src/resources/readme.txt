@@ -1,0 +1,1 @@
+Figurines provided by virtualpieces.net as freeware for personal use.
